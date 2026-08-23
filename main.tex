@@ -7,7 +7,7 @@
 %  evaluation band with the headline numbers and the three plots.
 % =====================================================================
 \documentclass[final]{beamer}
-\usepackage[size=a1,orientation=portrait,scale=1.0]{beamerposter}
+\usepackage[size=a1,orientation=portrait,scale=1.3]{beamerposter}
 
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
@@ -69,30 +69,37 @@
 % \gsec -- top-level group (goal / ingredients / designs / evaluation),
 % \psub -- subsection inside a group.
 \newcommand{\gsec}[1]{%
-  \par\vspace{0.1cm}
-  \begin{center}
-    {\fontsize{28}{32}\selectfont\bfseries\color{CornellRed}#1\par}
-  \end{center}
-  \vspace{-0.1cm}
+  \par\vspace{0.3cm}
+  {\raggedright\LARGE\bfseries\color{CornellRed}#1\par}
+  \vspace{-0.64cm}
   {\color{CornellRed}\rule{\linewidth}{2.2pt}}\par
-  \vspace{0.35cm}}
+  \vspace{0.36cm}}
 \newcommand{\psub}[1]{%
-  \par\vspace{0.1cm}
-  {\Large\bfseries\color{Ink}#1\par}
-  \vspace{0.12cm}
+  \par\vspace{0.22cm}
+  {\raggedright\Large\bfseries\color{Ink}#1\par}
+  \vspace{-0.64cm}
   {\color{Ink!30}\rule{\linewidth}{0.9pt}}\par
-  \vspace{0.3cm}}
+  \vspace{0.36cm}}
 
 % Big stat callout: number on top, short label under it.
 \newcommand{\stat}[3]{%
   \begin{minipage}[t]{#1}
     \centering
-    {\fontsize{46}{48}\selectfont\bfseries\color{CornellRed}#2}\\[0.2cm]
-    {\large\color{BlueGray}#3}
+    {\fontsize{32}{34}\selectfont\bfseries\color{CornellRed}#2}\\[0.1cm]
+    {\color{BlueGray}#3}
   \end{minipage}}
+
+% Every evaluation plot sits in this wrapper: flush left so the axis boxes
+% line up across the row, and top-anchored so all three start at one height.
+\newcommand{\plotbox}[1]{%
+  \par\noindent
+  \begin{tikzpicture}[baseline=(current bounding box.north)]#1\end{tikzpicture}%
+  \par}
 
 \begin{document}
 \begin{frame}[t,plain]
+% body text one step up from the beamer default
+\large
 
 % =====================================================================
 %  TOP STRIP -- conference identity
@@ -110,17 +117,17 @@
 % =====================================================================
 %  TITLE
 % =====================================================================
-\vspace{0.7cm}
+\vspace{0.3cm}
 \noindent\begin{minipage}[c]{0.855\textwidth}
-  \noindent\resizebox{\linewidth}{!}{\bfseries\color{CornellRed}
+  \noindent\resizebox{0.90\linewidth}{!}{\bfseries\color{CornellRed}
    Succinct and Fast Tiny Pointer Hash Tables}\par
-  \vspace{0.5cm}
+  \vspace{0.18cm}
   {\Large
    Xilin Tang\textsuperscript{1} \quad
    Yuqi Mai\textsuperscript{1} \quad
    William Kuszmaul\textsuperscript{2} \quad
    Alex Conway\textsuperscript{3}\par}
-  \vspace{0.3cm}
+  \vspace{0.12cm}
   {\large\color{BlueGray}
    \textsuperscript{1}Cornell University \qquad
    \textsuperscript{2}Carnegie Mellon University \qquad
@@ -128,13 +135,13 @@
 \end{minipage}\hfill
 \begin{minipage}[c]{0.13\textwidth}
   \centering
-  \qrcode[height=4.6cm]{https://github.com/Xilinion/TPHT}\\[0.3cm]
+  \qrcode[height=3.4cm]{https://github.com/Xilinion/TPHT}\\[0.15cm]
   {\small\ttfamily github.com/Xilinion/TPHT}
 \end{minipage}
 
-\vspace{0.3cm}
+\vspace{0.15cm}
 \noindent{\color{Ink!25}\rule{\textwidth}{0.8pt}}
-\vspace{0.3cm}
+\vspace{0.15cm}
 
 % =====================================================================
 %  BODY -- two columns: the story, then the designs
@@ -147,19 +154,24 @@
 \begin{column}{0.475\textwidth}
 
 % ------ the takeaway, in plain language ------------------------------
-{\fontsize{31}{40}\selectfont
- A hash table can be \textcolor{CornellRed}{\textbf{smaller than the data
- it stores}} --- and still \textcolor{CornellRed}{\textbf{faster than the
- state of the art}}.\par}
+{\LARGE
+ \TPHT breaks the speed--space trade-off:
+ \textcolor{CornellRed}{\textbf{smaller and faster than the state of the
+ art}} --- even \textcolor{CornellRed}{\textbf{smaller than the data
+ itself}}.\par}
 
-\vspace{0.35cm}
+\vspace{-0.65cm}
+{\color{Ink!25}\rule{\linewidth}{0.8pt}}\par
+\vspace{0.3cm}
 \gsec{What is a good hash table?}
+\noindent\begin{minipage}[c]{0.63\linewidth}
 Every practical hash table trades throughput against memory: chaining pays
 for pointers, open addressing pays for empty slots. \TPHT engineers two
 ideas from theory to escape the trade-off.\par
-\vspace{0.2cm}
-\begin{center}
-\resizebox{0.48\linewidth}{!}{\slidefonts
+\end{minipage}\hfill
+\begin{minipage}[c]{0.34\linewidth}
+\centering
+\resizebox{0.93\linewidth}{!}{\slidefonts
 \begin{tikzpicture}[x=0.58cm,y=0.52cm]
   \fill[CornellRed!9] (0,4.15) rectangle (8.35,5.15);
   \fill[CornellRed!9] (6.95,0) rectangle (8.35,5.15);
@@ -180,17 +192,15 @@ ideas from theory to escape the trade-off.\par
   \node[align=left,anchor=south,font=\large\bfseries,text=CornellRed] at (7.55,4.85) {TPHT};
   \draw[CornellRed,very thick,-Latex] (5.45,2.55) -- (7.38,4.42);
 \end{tikzpicture}}
-\end{center}
+\end{minipage}
 
-\vspace{0.6cm}
+\vspace{0.55cm}
 \gsec{Two ingredients from theory}
 \psub{Ingredient 1: tiny pointers}
-A \keyterm{tiny pointer} can only be decoded together with its unique
-\textbf{owner} --- the owner supplies the missing context, so the pointer
-shrinks to \keyterm{one byte}: a direction bit plus an in-bin offset.\par
+A \keyterm{tiny pointer} is decoded only with its unique \textbf{owner} --- the owner supplies the context, so it shrinks to \keyterm{one byte}.\par
 \vspace{0.2cm}
 \begin{center}
-\resizebox{0.68\linewidth}{!}{\slidefonts
+\resizebox{0.80\linewidth}{!}{\slidefonts
 \begin{tikzpicture}[x=1cm,y=1cm,every node/.style={font=\normalsize},
     flow/.style={-{Latex[length=2.4mm,width=1.7mm]},line width=1.0pt},
     fieldbrace/.style={decorate,decoration={brace,amplitude=3.5pt,raise=2.5pt},line width=0.7pt}]
@@ -256,34 +266,37 @@ shrinks to \keyterm{one byte}: a direction bit plus an in-bin offset.\par
 \end{tikzpicture}}
 \end{center}
 \vspace{0.15cm}
-The backing allocator (a \emph{dereference table}) hashes the owner to two
-candidate bins and picks the emptier one --- and stays safe up to
-\keyterm{95\%} load.\par
+The \emph{dereference table} hashes the owner to two candidate bins and picks the emptier --- safe up to \keyterm{95\%} load.\par
 
-\vspace{0.6cm}
+\vspace{0.15cm}
 \psub{Ingredient 2: quotienting}
-Split each key into quotient \(q\) and remainder \(r\). The quotient
-\textbf{selects} the partition, so the location itself remembers \(q\) ---
-only \(r\) is ever written down.\par
-\vspace{0.2cm}
-\begin{center}
-\resizebox{0.60\linewidth}{!}{\slidefonts
+\noindent\begin{minipage}[c]{0.38\linewidth}
+The quotient \textbf{selects} the partition; the location itself remembers \(q\), so only \(r\) is written down.\par
+\vspace{0.5cm}
+\(k=q\circ r\) is recovered exactly via a one-round Feistel
+permutation.\par
+\end{minipage}\hfill
+\begin{minipage}[c]{0.58\linewidth}
+\centering
+\resizebox{0.82\linewidth}{!}{\slidefonts
 \begin{tikzpicture}[x=1cm,y=1cm,every node/.style={font=\normalsize},
     flow/.style={-{Latex[length=2.4mm,width=1.7mm]},line width=1.0pt},
     fieldbrace/.style={decorate,decoration={brace,amplitude=3.5pt,raise=2.5pt},line width=0.7pt}]
-  \node[anchor=east,align=right,font=\large\bfseries] at (-5.72,1.76) {6-bit\\key};
+  % --- the key, split q | r, sitting ABOVE the partition array ---------
+  \node[anchor=east,font=\large\bfseries] at (-1.55,3.94) {6-bit key};
   \draw[CornellRed,line width=1.25pt,rounded corners=2pt,fill=CornellRed!12]
-    (-5.60,1.72) rectangle (-4.66,2.24);
+    (-1.35,3.68) rectangle (-0.41,4.20);
   \draw[Purple,line width=1.25pt,rounded corners=2pt,fill=Purple!10]
-    (-4.62,1.72) rectangle (-2.89,2.24);
-  \foreach \b/\x in {1/-5.32,0/-4.88,1/-4.44,1/-4.00,0/-3.56,1/-3.12} {
-    \node[font=\large\bfseries\ttfamily,inner sep=1.0pt] at (\x,1.98) {\b};
+    (-0.37,3.68) rectangle (1.36,4.20);
+  \foreach \b/\x in {1/-1.07,0/-0.63,1/-0.19,1/0.25,0/0.69,1/1.13} {
+    \node[font=\large\bfseries\ttfamily,inner sep=1.0pt] at (\x,3.94) {\b};
   }
-  \draw[fieldbrace,CornellRed] (-5.60,2.24) -- (-4.66,2.24)
-    node[midway,above=8pt,xshift=-0.60cm,font=\large\bfseries,text=CornellRed] {quotient \(q\)};
-  \draw[fieldbrace,Purple] (-4.62,2.24) -- (-2.89,2.24)
-    node[midway,above=8pt,xshift=0.25cm,font=\large\bfseries,text=Purple] {remainder \(r\)};
+  \draw[fieldbrace,CornellRed] (-1.35,4.20) -- (-0.41,4.20)
+    node[midway,above=8pt,xshift=-0.55cm,font=\large\bfseries,text=CornellRed] {quotient \(q\)};
+  \draw[fieldbrace,Purple] (-0.37,4.20) -- (1.36,4.20)
+    node[midway,above=8pt,xshift=0.45cm,font=\large\bfseries,text=Purple] {remainder \(r\)};
 
+  % --- partition array below the key ----------------------------------
   \draw[Ink,line width=0.9pt,rounded corners=3pt,fill=white] (-1.95,-0.18) rectangle (2.18,3.20);
   \node[anchor=north west,font=\large\bfseries] at (-1.78,3.12) {4 Partitions};
   \foreach \q/\y in {00/2.16,01/1.52,10/0.88,11/0.24} {
@@ -296,16 +309,16 @@ only \(r\) is ever written down.\par
   \node[font=\LARGE\bfseries,BlueGray] at (1.22,0.24) {\(\cdots\)};
   \node[draw=Purple,fill=Purple!9,line width=1.0pt,rounded corners=2pt,text=Purple,
         minimum width=1.05cm,minimum height=0.32cm,font=\large\bfseries] (stored) at (1.22,0.88) {1101};
-  \node[draw=Gold,fill=Gold!20,line width=1.0pt,rounded corners=3pt,
-        inner sep=3.5pt,font=\Large\bfseries,rotate=4] at (0.85,-0.85) {only \textcolor{CornellRed}{4} bits stored!};
-  \draw[flow,CornellRed] (-5.13,1.72) .. controls (-5.30,0.95) and (-3.70,0.62) .. (-1.98,0.88);
-  \draw[flow,Purple,rounded corners=10pt]
-    (-2.89,1.98) -- (-2.32,2.58) -- (0.80,2.58) -- (0.80,1.10);
+  % quotient selects the partition; remainder is what gets written down
+  \draw[flow,CornellRed] (-0.88,3.66)
+    .. controls (-2.80,2.95) and (-2.80,1.35) .. (-1.98,0.88);
+  \draw[flow,Purple] (1.36,3.94)
+    .. controls (2.75,3.60) and (2.55,1.45) .. (1.80,0.88);
 \end{tikzpicture}}
-\end{center}
-\vspace{0.15cm}
-\(k=q\circ r\) is always recovered exactly; a one-round Feistel permutation
-composes quotienting with hashing.\par
+\end{minipage}
+
+% \vspace{0.3cm}
+% \noindent\textbf{Built for real systems:} online resizing with \keyterm{no global pauses}; multi-threaded; open-source.\par
 
 \end{column}
 \hfill
@@ -320,7 +333,7 @@ To our knowledge the \keyterm{first practical succinct hash table}:
 footprint below the raw data size, constant-time operations.\par
 \vspace{0.2cm}
 \begin{center}
-\resizebox{0.77\linewidth}{!}{\slidefonts
+\resizebox{0.93\linewidth}{!}{\slidefonts
 \begin{tikzpicture}[x=1cm,y=1cm,every node/.style={font=\normalsize},
     flow/.style={-{Latex[length=2.4mm,width=1.7mm]},line width=1.0pt},
     thinflow/.style={-{Latex[length=2.0mm,width=1.4mm]},line width=0.9pt},
@@ -360,7 +373,7 @@ footprint below the raw data size, constant-time operations.\par
     .. controls (-5.08,3.20) and (-3.78,3.16) .. (-3.78,2.66)
     .. controls (-3.78,2.37) and (-4.16,2.30) .. (-4.28,2.14);
   \node[fill=white,inner sep=1.8pt,font=\large,text=CornellRed] at (-4.86,3.10)
-    {quotienting\textsuperscript{\dag}};
+    {quotienting};
   % the address marker is what Deref needs
   \fill[BlueGray] (-4.14,1.55) -- (-4.32,1.55) -- (-4.14,1.70) -- cycle;
   \draw[tag,BlueGray] (-4.14,1.55) -- (-4.14,1.18) -- (-3.06,1.18);
@@ -438,24 +451,19 @@ footprint below the raw data size, constant-time operations.\par
     at (3.175,1.8) {\apiop{Alloc}{A_{*}}};
 \end{tikzpicture}}
 \end{center}
-\vspace{0.05cm}
-{\small\color{BlueGray}\textsuperscript{\dag}The one-round Feistel
-permutation of Ingredient 2.\par}
-\vspace{0.35cm}
+\vspace{0.25cm}
 \begin{itemize}
   \item Head array is \keyterm{8$\times$} smaller --- heads stay in cache.
   \item The quotient is \keyterm{never stored}; chains keep only \((r,v,p)\).
   \item First tuple inlined into the head entry: one fewer cache miss.
 \end{itemize}
 
-\vspace{0.4cm}
-\psub{Making it fast: packing chains into cache lines}
-One cache line per chain? \textbf{Mostly empty.} Let
-\textbf{neighboring quotient groups share} one line: tight packing, but
-overflow still chains.\par
+\vspace{0.2cm}
+\psub{Making it faster: packing chains into cache lines}
+Lifting payload to head arry;\\let neighboring quotient groups share one cache line.\par
 \vspace{0.2cm}
 \begin{center}
-\resizebox{0.77\linewidth}{!}{\slidefonts
+\resizebox{0.93\linewidth}{!}{\slidefonts
 \begin{tikzpicture}[x=1cm,y=1cm,
     cell/.style={rounded corners=1.5pt,line width=0.65pt},
     flow/.style={-{Latex[length=2.2mm,width=1.5mm]},line width=0.9pt},
@@ -598,14 +606,11 @@ overflow still chains.\par
     {Multiple hops in worst case};
 \end{tikzpicture}}
 \end{center}
-\vspace{0.4cm}
-\psub{Flattened-TPHT: one-hop overflow}
-Keep the packing, drop the chains: a full home line migrates \textbf{one}
-tuple out, leaving a tiny pointer --- overflow \keyterm{never points to
-more overflow}.\par
 \vspace{0.2cm}
-\begin{center}
-\resizebox{0.48\linewidth}{!}{\slidefonts
+\psub{Flattened-TPHT: one-hop overflow}
+\noindent\begin{minipage}[c]{0.49\linewidth}
+\centering
+\resizebox{0.93\linewidth}{!}{\slidefonts
 \begin{tikzpicture}[x=1cm,y=1cm,
     flow/.style={-{Latex[length=2.4mm,width=1.7mm]},line width=1.0pt},
     ins/.style={-{Latex[length=2.8mm,width=2.0mm]},line width=1.2pt},
@@ -701,22 +706,17 @@ more overflow}.\par
   \draw[zoomline,Green!70!black] (2.93,1.88) -- (3.86,1.88);
   \draw[zoomline,CornellRed]     (3.41,1.20) -- (3.86,1.20);
 \end{tikzpicture}}
-\end{center}
-\vspace{0.15cm}
+\end{minipage}\hfill
+\begin{minipage}[c]{0.48\linewidth}
+A full home line migrates \textbf{one} tuple out, leaving a tiny pointer
+--- overflow \keyterm{never chains}.\par
+\vspace{0.35cm}
 \begin{itemize}
-  \item \keyterm{1.25} memory accesses per operation --- no pointer chasing,
-        one hop, never a chain.
-  \item Migration to the overflow table is rare: \keyterm{5.1\%} of tuples.
-  \item Room for \keyterm{31} tiny pointers per line; max load \keyterm{24} w.h.p.
+  \item \keyterm{1.25} memory accesses per operation.
+  \item Migration is rare: \keyterm{5.1\%} of tuples.
+  \item \keyterm{31} pointer slots per line; max load \keyterm{24} w.h.p.
 \end{itemize}
-
-\vspace{0.4cm}
-\psub{Built for real systems}
-\begin{itemize}
-  \item Online resizing --- \keyterm{no global pauses}, no stop-the-world rehash.
-  \item Inserts, lookups, deletes, updates; 64-bit keys and values; multi-threaded.
-  \item Library, benchmarks, and scripts open-sourced.
-\end{itemize}
+\end{minipage}
 
 \end{column}
 \end{columns}
@@ -724,46 +724,39 @@ more overflow}.\par
 % =====================================================================
 %  EVALUATION BAND -- full width: headline numbers + the three plots
 % =====================================================================
-\vspace{0.15cm}
+\vspace{0.1cm}
 \noindent{\color{Ink!25}\rule{\textwidth}{0.8pt}}
-\vspace{0.0cm}
+\vspace{-0.05cm}
 
 \gsec{Evaluation}
-\vspace{-0.15cm}
+\vspace{-0.28cm}
 \noindent
-\textbf{Workload:} YCSB, \(2^{26}\)=64M 64-bit key--value pairs, 16 threads.
-\quad
+{\textbf{Workload:} YCSB, \(2^{26}\)=64M 64-bit key--value pairs,
+16 threads.\quad
 \textbf{Baselines:} libcuckoo\textsuperscript{[1]},
 IcebergHT\textsuperscript{[2]}, Junction\textsuperscript{[3]},
-TBB\textsuperscript{[4]}.
-\quad
-\textbf{Machine:} Intel Xeon Silver 4314, 16 cores, 24\,MiB L3.\par
-\vspace{0.15cm}
+TBB\textsuperscript{[4]}.\quad\\
+\textbf{Machine:} Intel Xeon Silver 4314, 16 cores, 24\,MiB L3.\par}
+\vspace{0.0cm}
 
 \noindent\begin{minipage}[t]{0.165\textwidth}
-\psub{Headline numbers}
-\stat{\linewidth}{105.4\%}{space efficiency: \Chained's payload exceeds
-  its memory}\\[0.45cm]
-\stat{\linewidth}{2.3$\times$}{the fastest baseline's YCSB throughput
-  (\Flat)}\\[0.45cm]
-\stat{\linewidth}{1.25}{memory accesses per operation --- overflow
-  never chains}
+\psub{Key numbers}
+\stat{\linewidth}{105.4\%}{max space efficiency}\\[0.62cm]
+\stat{\linewidth}{2.3$\times$}{YCSB speedup vs.\ best}\\[0.62cm]
+\stat{\linewidth}{1.25}{memory accesses / op}
 \end{minipage}\hfill
 \begin{minipage}[t]{0.262\textwidth}
-\psub{Result 1: higher throughput}
-\Flat is \keyterm{2.0$\times$} the fastest baseline on load,
-\keyterm{2.3$\times$} on run.\par
-\vspace{0.25cm}
-\begin{center}
-\begin{tikzpicture}
+\psub{Result 1: throughput}
+\plotbox{
   \begin{axis}[
-    ybar, width=0.97\linewidth, height=7.0cm, ymin=0, ymax=545,
-    ylabel={\textbf{Throughput} (M ops/s)},
-    ylabel style={font=\small},
+    ybar, scale only axis, width=0.74\linewidth, height=5.2cm,
+    ymin=0, ymax=545,
+    ylabel={\textbf{Throughput}\\(M ops/s)},
+    ylabel style={font=\small,align=center},
     symbolic x coords={Cuckoo,Iceberg,Junction,TBB,Chained,Flattened},
     xtick={Cuckoo,Iceberg,Junction,TBB,Chained,Flattened},
     xmin=Cuckoo, xmax=Flattened,
-    x tick label style={rotate=20,anchor=north east,font=\small,inner sep=2pt},
+    x tick label style={rotate=20,anchor=north east,font=\scriptsize,inner sep=2pt},
     y tick label style={font=\small},
     legend style={draw=none,fill=none,at={(0.03,0.97)},anchor=north west,legend columns=1,font=\small},
     bar width=14pt, enlarge x limits=0.11,
@@ -787,24 +780,20 @@ TBB\textsuperscript{[4]}.
     \addlegendimage{area legend,pattern=north east lines,pattern color=Ink,draw=Ink}
     \addlegendentry{run}
   \end{axis}
-\end{tikzpicture}
-\end{center}
+}
 \end{minipage}\hfill
 \begin{minipage}[t]{0.262\textwidth}
 \psub{Result 2: space efficiency}
-Above \keyterm{100\%}, the table stores more payload bits than it
-allocates --- quotienting's positional bits are free.\par
-\vspace{0.25cm}
-\begin{center}
-\begin{tikzpicture}
+\plotbox{
   \begin{axis}[
-    ybar, width=0.97\linewidth, height=7.0cm, ymin=0, ymax=132,
-    ylabel={\textbf{Max Space Efficiency} (\%)},
+    ybar, scale only axis, width=0.74\linewidth, height=5.2cm,
+    ymin=0, ymax=132,
+    ylabel={\textbf{Max Space}\\\textbf{Efficiency} (\%)},
     ylabel style={font=\small,align=center},
     symbolic x coords={TBB,Cuckoo,Junction,IcebergHT,Flattened,Chained},
     xtick={TBB,Cuckoo,Junction,IcebergHT,Flattened,Chained},
     xmin=TBB, xmax=Chained,
-    x tick label style={rotate=20,anchor=north east,font=\small,inner sep=2pt},
+    x tick label style={rotate=20,anchor=north east,font=\scriptsize,inner sep=2pt},
     y tick label style={font=\small},
     nodes near coords={\pgfmathprintnumber[fixed,zerofill,precision=1]{\pgfplotspointmeta}},
     nodes near coords style={font=\small,anchor=south,inner sep=2pt},
@@ -821,27 +810,22 @@ allocates --- quotienting's positional bits are free.\par
     \node[anchor=south west,font=\small,text=CornellRed]
       at ({rel axis cs:0.015,0}|-{axis cs:TBB,100}) {100\% = data size};
   \end{axis}
-\end{tikzpicture}
-\end{center}
+}
 \end{minipage}\hfill
 \begin{minipage}[t]{0.262\textwidth}
 \psub{Result 3: speed vs.\ space}
-Single-core insertion sweep. A curve \textbf{ends where the table gives
-up}: baselines quit at 70--82\%; \Chained runs past \keyterm{105\%}.\par
-\vspace{0.25cm}
-\begin{center}
-\begin{tikzpicture}
+\plotbox{
   \begin{axis}[
-    width=0.99\linewidth, height=7.3cm,
-    xmin=0, xmax=112, ymin=0, ymax=28,
+    scale only axis, width=0.74\linewidth, height=5.2cm,
+    xmin=0, xmax=112, ymin=0, ymax=33,
     xlabel={\textbf{Space Efficiency} (\%)},
-    ylabel={\textbf{Insertion Throughput} (M ops/s)},
+    ylabel={\textbf{Insertion Throughput}\\(M ops/s)},
     xlabel style={font=\small}, ylabel style={font=\small,align=center},
     tick label style={font=\small},
     axis line style={draw=Ink}, grid=major,
     major grid style={line width=0.3pt,draw=Ink!14},
-    legend style={draw=none,fill=none,at={(0.98,0.98)},anchor=north east,legend columns=2,font=\scriptsize,
-                  /tikz/every even column/.append style={column sep=6pt}},
+    legend style={draw=none,fill=white,at={(0.5,1.0)},anchor=north,legend columns=3,font=\tiny,
+                  /tikz/every even column/.append style={column sep=4pt}},
     legend cell align=left,
     every axis plot/.append style={line width=2.2pt,mark size=3.2pt},
   ]
@@ -851,16 +835,15 @@ up}: baselines quit at 70--82\%; \Chained runs past \keyterm{105\%}.\par
     \addplot[color=Ink!75,mark=diamond*] coordinates {(6.2,2.6) (10.0,2.6) (13.1,2.7) (15.6,2.7) (17.1,2.8) (19.9,2.8) (20.8,2.9) (22.3,2.9) (23.3,3.0) (24.7,3.0) (25.4,3.0) (27.1,3.1) (27.6,3.0) (28.6,3.1) (29.1,3.1) (29.3,3.2) (30.5,3.2) (30.9,3.2) (31.2,3.2) (32.3,3.2)};
     \addplot[color=CornellRed!86!Ink,mark=*,line width=2.5pt] coordinates {(5.3,12.9) (10.6,13.0) (16.0,12.9) (21.3,12.7) (26.6,12.4) (31.9,12.1) (37.3,11.8) (42.6,11.4) (47.9,11.2) (53.2,10.9) (58.6,10.6) (63.9,10.3) (69.2,10.0) (74.5,9.8) (79.9,9.5) (85.2,9.3) (90.5,9.1) (95.8,8.9) (101.2,8.7) (105.4,8.5)};
     \addplot[color=CornellRed,mark=pentagon*,densely dashed,line width=2.5pt] coordinates {(4.2,24.7) (8.4,24.5) (12.6,24.6) (16.8,24.5) (21.1,24.1) (25.3,23.9) (29.5,23.7) (33.7,23.5) (37.9,23.2) (42.1,22.8) (46.3,22.6) (50.5,22.2) (54.8,21.9) (59.0,21.5) (63.2,20.9) (67.4,20.7) (71.6,20.3) (75.8,19.9) (80.0,19.3) (83.4,19.0)};
-    \draw[dashed,CornellRed!65,line width=1.1pt] (axis cs:100,0) -- (axis cs:100,28);
-    \node[anchor=south east,font=\small,text=CornellRed,rotate=90] at (axis cs:99.4,9.5) {100\% payload};
+    \draw[dashed,CornellRed!65,line width=1.1pt] (axis cs:100,0) -- (axis cs:100,26);
+    \node[anchor=north east,font=\scriptsize,text=CornellRed] at (axis cs:99,26.5) {100\% payload};
     \legend{Cuckoo, IcebergHT, Junction, TBB, Chained-TPHT, Flattened-TPHT}
   \end{axis}
-\end{tikzpicture}
-\end{center}
+}
 \end{minipage}
 
 \vspace{0.05cm}
-{\scriptsize\color{BlueGray}
+{\tiny\color{BlueGray}
 [1] Li, Andersen, Kaminsky, Freedman. \emph{Algorithmic Improvements for Fast
 Concurrent Cuckoo Hashing.} EuroSys~'14.\quad
 [2] Pandey et al. \emph{IcebergHT: High Performance Hash Tables Through
